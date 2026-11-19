@@ -229,7 +229,7 @@ def serve_date_site():
                     <span class="badge badge-amber mono">🎯 FINAL CLEARANCE GRANTED</span>
                     <h2>So {HER_NAME}... let’s make this official.</h2>
                     <p class="sub" style="margin: 12px 0 22px;">
-                        You’re effortlessly cool, fun to be around, and I’d love to take you out for an elite hangout or just an ice cream date. Are you in?
+                        You’re effortlessly cool,Probably fun to be around, and I’d love to take you out for an elite hangout or just an ice cream date. Are you in?
                     </p>
 
                     <button type="button" onclick="acceptDate()" class="cta-btn" style="font-size: 16px;">YES, I’M IN 🥂</button>
