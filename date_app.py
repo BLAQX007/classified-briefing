@@ -198,163 +198,200 @@ def serve_date_site():
             <!-- PAGE 3 -->
             <section id="page-3" class="hidden fade-in section-gap">
                 <div>
-STEP 03 // DESIGN THE PLAN
-Build your ideal hangout.
-Pick one from each section. {YOUR_NAME} handles the rest.
-THE VIBE
+                    <span class="mono" style="font-size: 11px; color: #fbbf24;">STEP 03 // DESIGN THE PLAN</span>
+                    <h2>Build your ideal hangout.</h2>
+                    <p class="sub">Pick one from each section. {YOUR_NAME} handles the rest.</p>
+                </div>
 
-🍝 Dinner & Late-Night Dessert
-☕ Coffee Run & Sunset Walk
-🎳 Drinks, Games & Trash Talk
+                <div>
+                    <p class="mono" style="font-size: 11px; color: #a1a1aa;">THE VIBE</p>
+                    <div class="grid-1" id="vibe-group">
+                        <button type="button" onclick="selectPlan('vibe', this, 'Dinner & Late-Night Dessert 🍝🍨')" class="opt-btn opt-selected">🍝 Dinner & Late-Night Dessert</button>
+                        <button type="button" onclick="selectPlan('vibe', this, 'Coffee Run & Sunset Walk ☕🌅')" class="opt-btn">☕ Coffee Run & Sunset Walk</button>
+                        <button type="button" onclick="selectPlan('vibe', this, 'Drinks, Games & Trash Talk 🎳🏆')" class="opt-btn">🎳 Drinks, Games & Trash Talk</button>
+                    </div>
+                </div>
 
-THE WILDCARD RULE
+                <div>
+                    <p class="mono" style="font-size: 11px; color: #a1a1aa;">THE WILDCARD RULE</p>
+                    <div class="grid-2" id="rule-group">
+                        <button type="button" onclick="selectPlan('rule', this, 'Phones on Do Not Disturb 📵')" class="opt-btn opt-selected">📵 Phones on DND</button>
+                        <button type="button" onclick="selectPlan('rule', this, 'Winner picks dessert 🍦')" class="opt-btn">🍦 Winner picks dessert</button>
+                    </div>
+                </div>
 
-📵 Phones on DND
-🍦 Winner picks dessert
+                <button type="button" onclick="goToPage(4)" class="cta-btn">Lock In Choices & Reveal Finale ✨</button>
+            </section>
 
-Lock In Choices & Reveal Finale ✨
-🎯 FINAL CLEARANCE GRANTED
-So {HER_NAME}... let’s make this official.
+            <!-- PAGE 4 -->
+            <section id="page-4" class="hidden fade-in center">
+                <div id="ask-view">
+                    <span class="badge badge-amber mono">🎯 FINAL CLEARANCE GRANTED</span>
+                    <h2>So {HER_NAME}... let’s make this official.</h2>
+                    <p class="sub" style="margin: 12px 0 22px;">
+                        You’re effortlessly cool, fun to be around, and I’d love to take you out for an elite hangout or just an ice cream date. Are you in?
+                    </p>
 
-You’re effortlessly cool, fun to be around, and I’d love to take you out for an elite hangout or just an ice cream date. Are you in?
-YES, I’M IN 🥂
+                    <button type="button" onclick="acceptDate()" class="cta-btn" style="font-size: 16px;">YES, I’M IN 🥂</button>
+                    <div>
+                        <button id="no-btn" type="button" onmouseover="dodgeNo()" onclick="dodgeNo()" class="no-btn">No thanks</button>
+                    </div>
+                </div>
 
-No thanks
+                <div id="ticket-view" class="hidden fade-in">
+                    <div style="font-size: 36px; margin-bottom: 6px;">🥂</div>
+                    <h2>IT’S A DATE!</h2>
+                    <p class="sub">Screenshot this pass and text it to {YOUR_NAME} to claim.</p>
 
-🥂
-IT’S A DATE!
-Screenshot this pass and text it to {YOUR_NAME} to claim.
-VIP DATE PASS // #001
-CONFIRMED
+                    <div class="ticket" style="text-align: left;">
+                        <div style="display: flex; justify-content: space-between; font-size: 11px; border-bottom: 1px dashed #3f3f46; padding-bottom: 8px;" class="mono">
+                            <span style="color: #fbbf24;">VIP DATE PASS // #001</span>
+                            <span style="color: #4ade80;">CONFIRMED</span>
+                        </div>
+                        <div class="ticket-row">
+                            <div class="ticket-label mono">GUESTS</div>
+                            <div class="ticket-val">{HER_NAME} + {YOUR_NAME}</div>
+                        </div>
+                        <div class="ticket-row">
+                            <div class="ticket-label mono">SELECTED VIBE</div>
+                            <div id="ticket-vibe" class="ticket-val">Dinner & Late-Night Dessert 🍝🍨</div>
+                        </div>
+                        <div class="ticket-row">
+                            <div class="ticket-label mono">WILDCARD RULE</div>
+                            <div id="ticket-rule" class="ticket-val">Phones on Do Not Disturb 📵</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
 
+    <script>
+        let scanProgress = 0;
+        let scanTimer = null;
+        let selectedVibe = "Dinner & Late-Night Dessert 🍝🍨";
+        let selectedRule = "Phones on Do Not Disturb 📵";
+        let dodgeCount = 0;
 
-GUESTS
-{HER_NAME} + {YOUR_NAME}
+        const scanBtn = document.getElementById("scan-btn");
+        const scanFill = document.getElementById("scan-fill");
+        const scanLabel = document.getElementById("scan-label");
+        const scanStatus = document.getElementById("scan-status");
 
+        function startScan(e) {{
+            if (e) e.preventDefault();
+            if (scanTimer) return;
+            scanLabel.textContent = "SCANNING...";
+            scanStatus.textContent = "Reading biometric signature...";
+            scanStatus.style.color = "#fda4af";
 
-SELECTED VIBE
-Dinner & Late-Night Dessert 🍝🍨
+            scanTimer = setInterval(() => {{
+                scanProgress += 4;
+                scanFill.style.width = scanProgress + "%";
+                if (scanProgress >= 100) {{
+                    clearInterval(scanTimer);
+                    scanTimer = null;
+                    scanLabel.textContent = "VERIFIED";
+                    scanStatus.textContent = "Identity confirmed. Unlocking file...";
+                    scanStatus.style.color = "#4ade80";
+                    setTimeout(() => goToPage(2), 450);
+                }}
+            }}, 45);
+        }}
 
+        function cancelScan() {{
+            if (scanProgress >= 100) return;
+            clearInterval(scanTimer);
+            scanTimer = null;
+            scanProgress = 0;
+            scanFill.style.width = "0%";
+            scanLabel.textContent = "HOLD TO SCAN";
+            scanStatus.textContent = "Scan interrupted. Hold down to verify...";
+            scanStatus.style.color = "#71717a";
+        }}
 
-WILDCARD RULE
-Phones on Do Not Disturb 📵
+        scanBtn.addEventListener("mousedown", startScan);
+        scanBtn.addEventListener("mouseup", cancelScan);
+        scanBtn.addEventListener("mouseleave", cancelScan);
+        scanBtn.addEventListener("touchstart", startScan, {{ passive: false }});
+        scanBtn.addEventListener("touchend", cancelScan);
+        scanBtn.addEventListener("touchcancel", cancelScan);
 
+        function goToPage(pageNum) {{
+            for (let i = 1; i <= 4; i++) {{
+                document.getElementById("page-" + i).classList.add("hidden");
+            }}
+            document.getElementById("page-" + pageNum).classList.remove("hidden");
+            document.getElementById("page-indicator").textContent = "PAGE 0" + pageNum + " / 04";
+            document.getElementById("progress-bar").style.width = (pageNum * 25) + "%";
+        }}
 
+        function selectQuiz(group, btn, feedback) {{
+            const buttons = document.querySelectorAll("#" + group + "-group .opt-btn");
+            buttons.forEach(b => b.classList.remove("quiz-selected"));
+            btn.classList.add("quiz-selected");
+            document.getElementById("quiz-feedback").textContent = feedback;
+        }}
 
+        function selectPlan(type, btn, value) {{
+            const groupId = type === "vibe" ? "vibe-group" : "rule-group";
+            const buttons = document.querySelectorAll("#" + groupId + " .opt-btn");
+            buttons.forEach(b => b.classList.remove("opt-selected"));
+            btn.classList.add("opt-selected");
 
-let scanProgress = 0;
-let scanTimer = null;
-let selectedVibe = "Dinner & Late-Night Dessert 🍝🍨";
-let selectedRule = "Phones on Do Not Disturb 📵";
-let dodgeCount = 0;
-const scanBtn = document.getElementById("scan-btn");
-const scanFill = document.getElementById("scan-fill");
-const scanLabel = document.getElementById("scan-label");
-const scanStatus = document.getElementById("scan-status");
-function startScan(e) {{
-if (e) e.preventDefault();
-if (scanTimer) return;
-scanLabel.textContent = "SCANNING...";
-scanStatus.textContent = "Reading biometric signature...";
-scanStatus.style.color = "#fda4af";
-scanTimer = setInterval(() => {{
-scanProgress += 4;
-scanFill.style.width = scanProgress + "%";
-if (scanProgress >= 100) {{
-clearInterval(scanTimer);
-scanTimer = null;
-scanLabel.textContent = "VERIFIED";
-scanStatus.textContent = "Identity confirmed. Unlocking file...";
-scanStatus.style.color = "#4ade80";
-setTimeout(() => goToPage(2), 450);
-}}
-}}, 45);
-}}
-function cancelScan() {{
-if (scanProgress >= 100) return;
-clearInterval(scanTimer);
-scanTimer = null;
-scanProgress = 0;
-scanFill.style.width = "0%";
-scanLabel.textContent = "HOLD TO SCAN";
-scanStatus.textContent = "Scan interrupted. Hold down to verify...";
-scanStatus.style.color = "#71717a";
-}}
-scanBtn.addEventListener("mousedown", startScan);
-scanBtn.addEventListener("mouseup", cancelScan);
-scanBtn.addEventListener("mouseleave", cancelScan);
-scanBtn.addEventListener("touchstart", startScan, {{ passive: false }});
-scanBtn.addEventListener("touchend", cancelScan);
-scanBtn.addEventListener("touchcancel", cancelScan);
-function goToPage(pageNum) {{
-for (let i = 1; i <= 4; i++) {{
-document.getElementById("page-" + i).classList.add("hidden");
-}}
-document.getElementById("page-" + pageNum).classList.remove("hidden");
-document.getElementById("page-indicator").textContent = "PAGE 0" + pageNum + " / 04";
-document.getElementById("progress-bar").style.width = (pageNum * 25) + "%";
-}}
-function selectQuiz(group, btn, feedback) {{
-const buttons = document.querySelectorAll("#" + group + "-group .opt-btn");
-buttons.forEach(b => b.classList.remove("quiz-selected"));
-btn.classList.add("quiz-selected");
-document.getElementById("quiz-feedback").textContent = feedback;
-}}
-function selectPlan(type, btn, value) {{
-const groupId = type === "vibe" ? "vibe-group" : "rule-group";
-const buttons = document.querySelectorAll("#" + groupId + " .opt-btn");
-buttons.forEach(b => b.classList.remove("opt-selected"));
-btn.classList.add("opt-selected");
-if (type === "vibe") {{
-selectedVibe = value;
-document.getElementById("ticket-vibe").textContent = value;
-}} else {{
-selectedRule = value;
-document.getElementById("ticket-rule").textContent = value;
-}}
-}}
-function dodgeNo() {{
-dodgeCount++;
-const noBtn = document.getElementById("no-btn");
-const x = Math.floor(Math.random() * 140) - 70;
-const y = Math.floor(Math.random() * 90) - 45;
-noBtn.style.transform = translate(${{x}}px, ${{y}}px);
-if (dodgeCount >= 3) {{
-noBtn.textContent = "Nice try 😂";
-}}
-}}
-function acceptDate() {{
-document.getElementById("ask-view").classList.add("hidden");
-document.getElementById("ticket-view").classList.remove("hidden");
-launchConfetti();
-}}
-function launchConfetti() {{
-const canvas = document.getElementById("confetti-canvas");
-const ctx = canvas.getContext("2d");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-const pieces = Array.from({{ length: 80 }}, () => ({{
-x: Math.random() * canvas.width,
-y: Math.random() * canvas.height - canvas.height,
-r: Math.random() * 6 + 4,
-c: ["#f43f5e", "#fbbf24", "#4ade80", "#38bdf8"][Math.floor(Math.random() * 4)],
-v: Math.random() * 3 + 2
-}}));
-function draw() {{
-ctx.clearRect(0, 0, canvas.width, canvas.height);
-pieces.forEach(p => {{
-ctx.fillStyle = p.c;
-ctx.beginPath();
-ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-ctx.fill();
-p.y += p.v;
-if (p.y > canvas.height) p.y = -10;
-}});
-requestAnimationFrame(draw);
-}}
-draw();
-}}
+            if (type === "vibe") {{
+                selectedVibe = value;
+                document.getElementById("ticket-vibe").textContent = value;
+            }} else {{
+                selectedRule = value;
+                document.getElementById("ticket-rule").textContent = value;
+            }}
+        }}
 
+        function dodgeNo() {{
+            dodgeCount++;
+            const noBtn = document.getElementById("no-btn");
+            const x = Math.floor(Math.random() * 140) - 70;
+            const y = Math.floor(Math.random() * 90) - 45;
+            noBtn.style.transform = `translate(${{x}}px, ${{y}}px)`;
+            if (dodgeCount >= 3) {{
+                noBtn.textContent = "Nice try 😂";
+            }}
+        }}
 
-"""
-return HTMLResponse(content=html)
+        function acceptDate() {{
+            document.getElementById("ask-view").classList.add("hidden");
+            document.getElementById("ticket-view").classList.remove("hidden");
+            launchConfetti();
+        }}
+
+        function launchConfetti() {{
+            const canvas = document.getElementById("confetti-canvas");
+            const ctx = canvas.getContext("2d");
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            const pieces = Array.from({{ length: 80 }}, () => ({{
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height - canvas.height,
+                r: Math.random() * 6 + 4,
+                c: ["#f43f5e", "#fbbf24", "#4ade80", "#38bdf8"][Math.floor(Math.random() * 4)],
+                v: Math.random() * 3 + 2
+            }}));
+            function draw() {{
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                pieces.forEach(p => {{
+                    ctx.fillStyle = p.c;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fill();
+                    p.y += p.v;
+                    if (p.y > canvas.height) p.y = -10;
+                }});
+                requestAnimationFrame(draw);
+            }}
+            draw();
+        }}
+    </script>
+</body>
+</html>"""
+    return HTMLResponse(content=html)
